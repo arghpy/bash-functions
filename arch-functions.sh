@@ -58,5 +58,5 @@ function install_virt-manager() {
   log_info "System needs to be rebooted now"
   log_ok "Done"
 
-  return RETURN_VALUE
+  return "${RETURN_VALUE}"
 }
