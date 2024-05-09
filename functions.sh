@@ -3,7 +3,7 @@
 # shellcheck disable=SC1091
 if ! source log_functions.sh; then
     echo "Error! Could not source functions.sh"
-    exit 1
+    return 1
 fi
 
 function exit_on_error() {
