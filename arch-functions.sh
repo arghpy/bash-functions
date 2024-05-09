@@ -1,47 +1,50 @@
 #!/usr/bin/env bash
 
-SCRIPT_NAME="bash-functions"
+SCRIPT_NAME="arch-functions"
 DATE="$(date +%Y-%m-%d_%H-%M)"
 LOG_FILE="logs/${SCRIPT_NAME}_${DATE}.log"
 
 # Logging the entire script and also outputing to terminal
-exec 2>&1 >(tee --append "${LOG_FILE}")
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
+exec 1>"${LOG_FILE}" 2>&1
 
 if ! source functions.sh; then
   echo "Could not source functions.sh. Aborting..."
-  exit 1
+  return 1
 fi
 
 function install_virt-manager() {
+  local RETURN_VALUE=0
   log_info "Preparing installation of virt-manager"
 
   log_info "Installing libvirt"
-  exit_on_error sudo pacman --sync --refresh --noconfirm libvirt
+  sudo pacman --sync --refresh --noconfirm libvirt || RETURN_VALUE=1
 
   log_info "Installing QEMU"
-  exit_on_error sudo pacman --sync --refresh --noconfirm qemu-full
+  sudo pacman --sync --refresh --noconfirm qemu-full || RETURN_VALUE=1
 
   log_info "Installing tools for networking"
-  exit_on_error sudo pacman --remove iptables
-  exit_on_error sudo pacman --sync --refresh --noconfirm dnsmasq iptables-nft dmidecode
+  sudo pacman --remove iptables || RETURN_VALUE=1
+  sudo pacman --sync --refresh --noconfirm dnsmasq iptables-nft dmidecode || RETURN_VALUE=1
 
   log_info "Configuring libvirt"
 
   local CURRENT_USER="${USER}"
   log_info "Adding ${CURRENT_USER} to libvirt group"
-  exit_on_error sudo usermod --append --groups libvirt "${CURRENT_USER}"
+  sudo usermod --append --groups libvirt "${CURRENT_USER}" || RETURN_VALUE=1
 
   log_info "Enabling libvirtd daemon"
-  exit_on_error sudo systemc enable --now libvirtd.service
+  sudo systemc enable --now libvirtd.service || RETURN_VALUE=1
 
   log_info "Enabling libvirtd socket"
-  exit_on_error sudo systemc enable --now libvirtd.socket
+  sudo systemc enable --now libvirtd.socket || RETURN_VALUE=1
 
   log_info "Installing virt-manager"
-  exit_on_error sudo pacman --sync --refresh --noconfirm virt-manager
+  sudo pacman --sync --refresh --noconfirm virt-manager || RETURN_VALUE=1
 
   log_info "Set the UNIX domain socket ownership to libvirt"
-  exit_on_error sudo sed -i 's/^#\(unix_sock_group.*\)/\1/' /etc/libvirt/libvirtd.conf
+  sudo sed -i 's/^#\(unix_sock_group.*\)/\1/' /etc/libvirt/libvirtd.conf || RETURN_VALUE=1
 
   log_info "Adding ${CURRENT_USER} to /etc/libvirt/qemu.conf"
   TEMP_FILE="$(mktemp)"
