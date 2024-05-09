@@ -26,16 +26,16 @@ jobs:
     secrets: inherit
     with:
       runner: ${{ vars.RUNNER }}
+      config_options: >
+        {
+        "VALIDATE_SHELL_SHFMT": false
+        }
 
   get_pr_status:
     name: Get PR Status
     runs-on: ${{ vars.RUNNER }}
     outputs:
       pr_status: ${{ steps.pr_status.outputs.pr_status }}
-      config_options: >
-        {
-        "VALIDATE_SHELL_SHFMT": false
-        }
 
     steps:
       - name: Assess PR Status
