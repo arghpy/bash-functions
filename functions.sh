@@ -14,3 +14,12 @@ function exit_on_error() {
         exit 1
     fi
 }
+
+function return_on_error() {
+    local COMMAND="$*"
+
+    if ! eval "${COMMAND}"; then
+        log_error "Error encountered. Aborting..."
+        return 1
+    fi
+}
