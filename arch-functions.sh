@@ -20,8 +20,11 @@ function install_virt-manager() {
   log_info "Adding ${CURRENT_USER} to libvirt group"
   sudo usermod --append --groups libvirt "${CURRENT_USER}"
 
-  log_info "Enabling libvirt daemon"
+  log_info "Enabling libvirtd daemon"
   sudo systemc enable --now libvirtd.service
+
+  log_info "Enabling libvirtd socket"
+  sudo systemc enable --now libvirtd.socket
 
   log_info "Installing virt-manager"
   sudo pacman --sync --refresh --noconfirm virt-manager
