@@ -32,6 +32,10 @@ jobs:
     runs-on: ${{ vars.RUNNER }}
     outputs:
       pr_status: ${{ steps.pr_status.outputs.pr_status }}
+      config_options: >
+        {
+        "VALIDATE_SHELL_SHFMT": false
+        }
 
     steps:
       - name: Assess PR Status
