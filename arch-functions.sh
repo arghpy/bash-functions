@@ -53,7 +53,7 @@ function install_virt-manager() {
     sub(/^#group = .*/,GROUP)
     print
   }' /etc/libvirt/qemu.conf > "${TEMP_FILE}"
-  sudo sh -c "cat "${TEMP_FILE}" > /etc/libvirt/qemu.conf"
+  sudo sh -c "cat ${TEMP_FILE} > /etc/libvirt/qemu.conf"
 
   log_info "System needs to be rebooted now"
   log_ok "Done"
