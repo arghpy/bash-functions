@@ -21,6 +21,7 @@ function apply_from_dotfiles() {
                 git pull || RETURN_VALUE=1
             log_info "Found ${directory}"
 
+            # shellcheck disable=SC2010
             for item in $(ls --almost-all | grep -v '.git*\|.linters_config\|README.md'); do
                 cp --recursive "${item}" "${HOME}"
             done
@@ -32,7 +33,7 @@ function apply_from_dotfiles() {
     done
 
     # popd again - notice the positioning of break statement
-    if [ $(dirs -l -p | wc -l) -gt 1 ]; then
+    if [ "$(dirs -l -p | wc -l)" -gt 1 ]; then
         popd || RETURN_VALUE=1
     else
         log_error "No ${DOTFILES_DIR_NAME} directory found"
