@@ -23,6 +23,7 @@ function apply_from_dotfiles() {
 
             # shellcheck disable=SC2010
             for item in $(ls --almost-all | grep -v '.git*\|.linters_config\|README.md'); do
+                # use rsync instead of cp
                 cp --recursive "${item}" "${HOME}"
             done
 
