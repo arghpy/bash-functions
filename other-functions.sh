@@ -17,15 +17,20 @@ function apply_from_dotfiles() {
         pushd "${directory}" || RETURN_VALUE=1
 
         if git status &> /dev/null; then
-            git checkout main &> /dev/null && \
-                git pull || RETURN_VALUE=1
             log_info "Found ${directory}"
 
-            # shellcheck disable=SC2010
-            for item in $(ls --almost-all | grep -v '.git*\|.linters_config\|README.md'); do
-                cp --recursive "${item}" "${HOME}"
-            done
+            git checkout main &> /dev/null && \
+                git pull || RETURN_VALUE=1
 
+            log_info "Syncing configuration"
+            rsync --archive \
+                --progress \
+                --partial \
+                --exclude="README.md" \
+                --exclude="\.git*" \
+                --exclude="\.linters*" . "${HOME}"
+
+            # Exit loop because folder was found
             break
         fi
 
