@@ -9,7 +9,7 @@ exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
 exec 1>"${LOG_FILE}" 2>&1
 
-if ! source functions.sh; then
+if ! source /opt/functions/functions.sh; then
   echo "Could not source functions.sh. Aborting..."
   return 1
 fi
