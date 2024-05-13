@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-SCRIPT_NAME="arch-functions"
-DATE="$(date +%Y-%m-%d_%H-%M)"
-LOG_FILE="logs/${SCRIPT_NAME}_${DATE}.log"
-
-# Logging the entire script and also outputing to terminal
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3 RETURN
-exec 1>"${LOG_FILE}" 2>&1
-
 # shellcheck disable=SC1091
 if ! source /opt/functions/functions.sh; then
   echo "Could not source functions.sh. Aborting..."
@@ -36,10 +27,10 @@ function install_virt-manager() {
   sudo usermod --append --groups libvirt "${CURRENT_USER}" || RETURN_VALUE=1
 
   log_info "Enabling libvirtd daemon"
-  sudo systemc enable --now libvirtd.service || RETURN_VALUE=1
+  sudo systemctl enable --now libvirtd.service || RETURN_VALUE=1
 
   log_info "Enabling libvirtd socket"
-  sudo systemc enable --now libvirtd.socket || RETURN_VALUE=1
+  sudo systemctl enable --now libvirtd.socket || RETURN_VALUE=1
 
   log_info "Installing virt-manager"
   sudo pacman --sync --refresh --noconfirm virt-manager || RETURN_VALUE=1
