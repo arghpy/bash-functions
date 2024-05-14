@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC1091
-if ! source /opt/functions/functions.sh; then
+if ! source "${HOME}/.local/bin/functions/functions.sh"; then
     echo "Error! Could not source functions.sh"
     return 1
 fi

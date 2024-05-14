@@ -1,4 +1,4 @@
-FUN_DIR = /opt/functions
+FUN_DIR = $${HOME}/.local/bin/functions
 
 install:
 	mkdir --parents $(FUN_DIR)
